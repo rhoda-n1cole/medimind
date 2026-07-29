@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediMind - Dashboard</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1 data-i18n="yourMedications">Your medications</h1>
+    <div>
+      <button id="langToggle" class="lang-toggle" onclick="toggleLanguage()">RW</button>
+      <button class="lang-toggle" id="logoutButton" data-i18n="logOut">Log out</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <ul class="medication-list" id="medicationList"></ul>
+      <p id="noMedicationsMessage" data-i18n="noMedications" style="display: none;">No medications added yet.</p>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="addMedication">Add a medication</h2>
+
+      <form id="medicationForm">
+        <input type="hidden" id="medicationId" value="" />
+
+        <div class="form-field">
+          <label for="medicationName" data-i18n="medicationName">Medication name</label>
+          <input type="text" id="medicationName" name="medicationName" data-i18n-placeholder="medicationNamePlaceholder" required />
+        </div>
+
+        <div class="form-field">
+          <label for="dosage" data-i18n="dosage">Dosage</label>
+          <input type="text" id="dosage" name="dosage" data-i18n-placeholder="dosagePlaceholder" required />
+        </div>
+
+        <div class="form-field">
+          <label for="frequency" data-i18n="frequency">Frequency</label>
+          <select id="frequency" name="frequency" required>
+            <option value="" data-i18n="selectFrequency">Select frequency</option>
+            <option value="once_daily">Once daily</option>
+            <option value="twice_daily">Twice daily</option>
+            <option value="three_times_daily">Three times daily</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="doseTimes" data-i18n="doseTimes">Dose times</label>
+          <input type="text" id="doseTimes" name="doseTimes" data-i18n-placeholder="doseTimesPlaceholder" required />
+        </div>
+
+        <div class="form-field">
+          <label for="reminderOffset" data-i18n="reminderOffset">Remind me before dose time</label>
+          <select id="reminderOffset" name="reminderOffset">
+            <option value="0" data-i18n="offsetOnTime">On time</option>
+            <option value="5" data-i18n="offsetFiveMin">5 minutes before</option>
+            <option value="10" data-i18n="offsetTenMin">10 minutes before</option>
+            <option value="15" data-i18n="offsetFifteenMin">15 minutes before</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="startDate" data-i18n="startDate">Start date</label>
+          <input type="date" id="startDate" name="startDate" required />
+        </div>
+
+        <div class="form-field">
+          <label for="endDate" data-i18n="endDateOptional">End date (optional)</label>
+          <input type="date" id="endDate" name="endDate" />
+        </div>
+
+        <button type="submit" class="btn" id="medicationSubmitButton" data-i18n="addMedicationButton">Add medication</button>
+        <p class="error-message" id="errorMessage"></p>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="caregiverLinkCode">Caregiver link code</h2>
+      <button class="btn btn-secondary" id="generateCodeButton" data-i18n="generateCode">Generate code</button>
+      <p id="linkCodeDisplay"></p>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/push.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "MediMind",
+  "short_name": "MediMind",
+  "start_url": "/login.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2f6f4f",
+  "icons": []
+}

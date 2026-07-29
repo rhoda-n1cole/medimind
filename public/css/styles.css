@@ -1,0 +1,167 @@
+:root {
+  --color-primary: #2f6f4f;
+  --color-primary-dark: #234f39;
+  --color-text: #1f2a24;
+  --color-muted: #6b7570;
+  --color-border: #d8ddda;
+  --color-bg: #f6f8f6;
+  --color-taken: #2e7d32;
+  --color-missed: #c62828;
+  --color-due: #f9a825;
+  --font-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.app-header h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+.form-field label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--color-muted);
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.btn {
+  display: inline-block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.link-row {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.error-message {
+  color: var(--color-missed);
+  font-size: 14px;
+  margin-top: 8px;
+  min-height: 20px;
+}
+
+.medication-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.medication-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.medication-item:last-child {
+  border-bottom: none;
+}
+
+.medication-name {
+  font-weight: 600;
+}
+
+.medication-meta {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.status-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.status-taken {
+  background-color: var(--color-taken);
+}
+
+.status-missed {
+  background-color: var(--color-missed);
+}
+
+.status-due {
+  background-color: var(--color-due);
+  color: var(--color-text);
+}
+
+.lang-toggle {
+  background: none;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}

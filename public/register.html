@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediMind - Register</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1 data-i18n="appName">MediMind</h1>
+    <button id="langToggle" class="lang-toggle" onclick="toggleLanguage()">RW</button>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h2 data-i18n="registerTitle">Create your account</h2>
+      <p data-i18n="registerSubtitle">Set up medication reminders and track your progress, even offline.</p>
+
+      <form id="registerForm">
+        <div class="form-field">
+          <label for="fullName" data-i18n="fullName">Full name</label>
+          <input type="text" id="fullName" name="fullName" required />
+        </div>
+
+        <div class="form-field">
+          <label for="email" data-i18n="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-field">
+          <label for="phoneNumber" data-i18n="phoneNumber">Phone number</label>
+          <input type="tel" id="phoneNumber" name="phoneNumber" required />
+        </div>
+
+        <div class="form-field">
+          <label for="password" data-i18n="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <div class="form-field">
+          <label for="confirmPassword" data-i18n="confirmPassword">Confirm password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required />
+        </div>
+
+        <button type="submit" class="btn" data-i18n="createAccount">Create account</button>
+        <p class="error-message" id="errorMessage"></p>
+      </form>
+
+      <p class="link-row">
+        <span data-i18n="alreadyHaveAccount">Already have an account?</span>
+        <a href="login.html" data-i18n="logIn">Log in</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/register.js"></script>
+</body>
+</html>
