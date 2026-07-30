@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediMind - Appointments</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1 data-i18n="appointmentsTitle">Appointments</h1>
+    <button id="langToggle" class="lang-toggle" onclick="toggleLanguage()">RW</button>
+  </header>
+
+  <main class="container">
+    <p class="link-row"><a href="dashboard.html" data-i18n="backToDashboard">Back to dashboard</a></p>
+
+    <div class="card">
+      <h2 data-i18n="upcomingAppointments">Upcoming appointments</h2>
+      <ul class="medication-list" id="appointmentList"></ul>
+      <p id="noAppointmentsMessage" data-i18n="noAppointments" style="display: none;">No appointments scheduled.</p>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="addAppointment">Add appointment</h2>
+
+      <form id="appointmentForm">
+        <div class="form-field">
+          <label for="appointmentDate" data-i18n="appointmentDate">Date</label>
+          <input type="date" id="appointmentDate" name="appointmentDate" required />
+        </div>
+
+        <div class="form-field">
+          <label for="appointmentTime" data-i18n="appointmentTime">Time</label>
+          <input type="time" id="appointmentTime" name="appointmentTime" required />
+        </div>
+
+        <div class="form-field">
+          <label for="clinicName" data-i18n="clinicName">Clinic name</label>
+          <input type="text" id="clinicName" name="clinicName" data-i18n-placeholder="clinicNamePlaceholder" required />
+        </div>
+
+        <div class="form-field">
+          <label for="notes" data-i18n="notesOptional">Notes (optional)</label>
+          <input type="text" id="notes" name="notes" />
+        </div>
+
+        <button type="submit" class="btn" data-i18n="addAppointmentButton">Add appointment</button>
+        <p class="error-message" id="errorMessage"></p>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/appointments.js"></script>
+</body>
+</html>

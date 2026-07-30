@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediMind - Caregiver</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1 data-i18n="caregiverDashboardTitle">Patient overview</h1>
+    <div>
+      <button id="langToggle" class="lang-toggle" onclick="toggleLanguage()">RW</button>
+      <button class="lang-toggle" id="logoutButton" data-i18n="logOut">Log out</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <p id="noLinkedPatientMessage" data-i18n="noLinkedPatient" style="display: none;">No patient linked to this account yet.</p>
+
+    <div id="linkedPatientContent">
+      <div class="card">
+        <h2 data-i18n="linkedPatientMedications">Medications</h2>
+        <ul class="medication-list" id="medicationList"></ul>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="linkedPatientChecklist">Today's checklist</h2>
+        <ul class="medication-list" id="checklistList"></ul>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="linkedPatientAppointments">Appointments</h2>
+        <ul class="medication-list" id="appointmentList"></ul>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/caregiver-dashboard.js"></script>
+</body>
+</html>

@@ -14,7 +14,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     });
 
     setToken(data.token);
-    window.location.href = "dashboard.html";
+    window.location.href = data.role === "caregiver" ? "caregiver-dashboard.html" : "dashboard.html";
   } catch (error) {
     errorMessage.textContent = error.message;
   }

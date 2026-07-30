@@ -20,7 +20,7 @@ function generateLinkCode() {
 }
 
 router.post("/register", async (req, res) => {
-  const { fullName, email, phoneNumber, password } = req.body;
+  const { fullName, email, phoneNumber, password, linkCode } = req.body;
 
   if (!fullName || !email || !phoneNumber || !password) {
     return res.status(400).json({ message: "All fields are required" });
@@ -31,6 +31,19 @@ router.post("/register", async (req, res) => {
     return res.status(409).json({ message: "An account with this email already exists" });
   }
 
+  let linkedPatientId = null;
+  let role = "patient";
+
+  if (linkCode) {
+    const patient = db.get("users").find({ linkCode }).value();
+    if (!patient) {
+      return res.status(400).json({ message: "Invalid caregiver code" });
+    }
+    role = "caregiver";
+    linkedPatientId = patient.id;
+    db.get("users").find({ id: patient.id }).assign({ linkCode: null }).write();
+  }
+
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
   const newUser = {
@@ -39,15 +52,16 @@ router.post("/register", async (req, res) => {
     email,
     phoneNumber,
     passwordHash,
+    role,
     linkCode: null,
-    linkedPatientId: null,
+    linkedPatientId,
     createdAt: new Date().toISOString(),
   };
 
   db.get("users").push(newUser).write();
 
   const token = generateToken(newUser.id);
-  res.status(201).json({ token });
+  res.status(201).json({ token, role });
 });
 
 router.post("/login", async (req, res) => {
@@ -68,7 +82,7 @@ router.post("/login", async (req, res) => {
   }
 
   const token = generateToken(user.id);
-  res.json({ token });
+  res.json({ token, role: user.role || "patient" });
 });
 
 router.post("/link-code", requireAuth, (req, res) => {
@@ -77,6 +91,11 @@ router.post("/link-code", requireAuth, (req, res) => {
   db.get("users").find({ id: req.userId }).assign({ linkCode: code }).write();
 
   res.json({ code });
+});
+
+router.get("/me", requireAuth, (req, res) => {
+  const user = db.get("users").find({ id: req.userId }).value();
+  res.json({ role: user.role || "patient", linkedPatientId: user.linkedPatientId || null });
 });
 
 module.exports = router;

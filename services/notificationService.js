@@ -1,5 +1,6 @@
 const cron = require("node-cron");
 const webpush = require("web-push");
+const crypto = require("crypto");
 const db = require("../db");
 
 webpush.setVapidDetails(
@@ -9,6 +10,10 @@ webpush.setVapidDetails(
 );
 
 const FOLLOW_UP_DELAY_MINUTES = 30;
+
+function generateActionToken() {
+  return crypto.randomBytes(16).toString("hex");
+}
 
 function getTodayDateString() {
   return new Date().toISOString().split("T")[0];
@@ -39,6 +44,7 @@ function generateTodayDoses() {
             notifiedAt: null,
             followUpSentAt: null,
             takenAt: null,
+            actionToken: null,
           })
           .write();
       }
@@ -74,13 +80,19 @@ async function checkOnTimeReminders() {
     reminderTime.setMinutes(reminderTime.getMinutes() - (medication.reminderOffsetMinutes || 0));
 
     if (now >= reminderTime) {
+      const actionToken = generateActionToken();
+
       await sendPush(dose.userId, {
         title: "MediMind reminder",
         body: `Time for ${medication.name} (${medication.dosage})`,
         doseId: dose.id,
+        actionToken,
       });
 
-      db.get("doses").find({ id: dose.id }).assign({ status: "notified", notifiedAt: now.toISOString() }).write();
+      db.get("doses")
+        .find({ id: dose.id })
+        .assign({ status: "notified", notifiedAt: now.toISOString(), actionToken })
+        .write();
     }
   }
 }
@@ -103,6 +115,7 @@ async function checkFollowUpReminders() {
         title: "MediMind follow-up",
         body: `Did you take ${medication.name}? Tap to confirm.`,
         doseId: dose.id,
+        actionToken: dose.actionToken,
       });
 
       db.get("doses").find({ id: dose.id }).assign({ followUpSentAt: now.toISOString() }).write();
@@ -110,11 +123,51 @@ async function checkFollowUpReminders() {
   }
 }
 
+function checkAutoMissedDoses() {
+  const today = getTodayDateString();
+  const unresolvedDoses = db
+    .get("doses")
+    .filter((dose) => !dose.scheduledTime.startsWith(today) && dose.status !== "taken" && dose.status !== "missed")
+    .value();
+
+  unresolvedDoses.forEach((dose) => {
+    db.get("doses").find({ id: dose.id }).assign({ status: "missed" }).write();
+  });
+}
+
+async function checkAppointmentReminders() {
+  const now = new Date();
+  const appointments = db.get("appointments").value();
+
+  for (const appointment of appointments) {
+    const appointmentTime = new Date(`${appointment.date}T${appointment.time}:00`);
+    const hoursUntil = (appointmentTime - now) / (1000 * 60 * 60);
+
+    if (hoursUntil <= 24 && hoursUntil > 0 && !appointment.reminder24hSent) {
+      await sendPush(appointment.userId, {
+        title: "MediMind appointment reminder",
+        body: `Appointment at ${appointment.clinicName} in 24 hours`,
+      });
+      db.get("appointments").find({ id: appointment.id }).assign({ reminder24hSent: true }).write();
+    }
+
+    if (hoursUntil <= 1 && hoursUntil > 0 && !appointment.reminder1hSent) {
+      await sendPush(appointment.userId, {
+        title: "MediMind appointment reminder",
+        body: `Appointment at ${appointment.clinicName} in 1 hour`,
+      });
+      db.get("appointments").find({ id: appointment.id }).assign({ reminder1hSent: true }).write();
+    }
+  }
+}
+
 function startNotificationScheduler() {
   cron.schedule("* * * * *", async () => {
     generateTodayDoses();
+    checkAutoMissedDoses();
     await checkOnTimeReminders();
     await checkFollowUpReminders();
+    await checkAppointmentReminders();
   });
 }
 

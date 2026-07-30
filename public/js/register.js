@@ -9,6 +9,7 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
   const phoneNumber = document.getElementById("phoneNumber").value.trim();
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
+  const linkCode = document.getElementById("linkCode").value.trim();
 
   if (password !== confirmPassword) {
     errorMessage.textContent = translate("passwordMismatch");
@@ -18,11 +19,11 @@ document.getElementById("registerForm").addEventListener("submit", async (event)
   try {
     const data = await apiRequest("/auth/register", {
       method: "POST",
-      body: JSON.stringify({ fullName, email, phoneNumber, password }),
+      body: JSON.stringify({ fullName, email, phoneNumber, password, linkCode: linkCode || undefined }),
     });
 
     setToken(data.token);
-    window.location.href = "dashboard.html";
+    window.location.href = data.role === "caregiver" ? "caregiver-dashboard.html" : "dashboard.html";
   } catch (error) {
     errorMessage.textContent = error.message;
   }

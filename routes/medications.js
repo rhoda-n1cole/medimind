@@ -7,11 +7,23 @@ const router = express.Router();
 router.use(requireAuth);
 
 router.get("/", (req, res) => {
-  const medications = db.get("medications").filter({ userId: req.userId }).value();
+  const user = db.get("users").find({ id: req.userId }).value();
+  const targetUserId = user.role === "caregiver" ? user.linkedPatientId : req.userId;
+
+  if (!targetUserId) {
+    return res.json([]);
+  }
+
+  const medications = db.get("medications").filter({ userId: targetUserId }).value();
   res.json(medications);
 });
 
 router.post("/", (req, res) => {
+  const user = db.get("users").find({ id: req.userId }).value();
+  if (user.role === "caregiver") {
+    return res.status(403).json({ message: "Caregivers cannot add medications" });
+  }
+
   const { name, dosage, frequency, startDate, endDate, doseTimes } = req.body;
 
   if (!name || !dosage || !frequency || !startDate) {
@@ -40,6 +52,11 @@ router.post("/", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
+  const user = db.get("users").find({ id: req.userId }).value();
+  if (user.role === "caregiver") {
+    return res.status(403).json({ message: "Caregivers cannot edit medications" });
+  }
+
   const medication = db.get("medications").find({ id: req.params.id, userId: req.userId }).value();
 
   if (!medication) {
@@ -73,6 +90,11 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
+  const user = db.get("users").find({ id: req.userId }).value();
+  if (user.role === "caregiver") {
+    return res.status(403).json({ message: "Caregivers cannot delete medications" });
+  }
+
   const medication = db.get("medications").find({ id: req.params.id, userId: req.userId }).value();
 
   if (!medication) {
