@@ -1,11 +1,20 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const rateLimit = require("express-rate-limit");
 const db = require("../db");
 const requireAuth = require("../middleware/auth");
 
 const router = express.Router();
 const SALT_ROUNDS = 10;
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { message: "Too many attempts, please try again later" },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 function generateToken(userId) {
   return jwt.sign(
@@ -19,11 +28,20 @@ function generateLinkCode() {
   return String(Math.floor(100000 + Math.random() * 900000));
 }
 
-router.post("/register", async (req, res) => {
+router.post("/register", authLimiter, async (req, res) => {
   const { fullName, email, phoneNumber, password, linkCode } = req.body;
 
   if (!fullName || !email || !phoneNumber || !password) {
     return res.status(400).json({ message: "All fields are required" });
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    return res.status(400).json({ message: "Please enter a valid email address" });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password must be at least 8 characters" });
   }
 
   const existingUser = db.get("users").find({ email }).value();
@@ -64,7 +82,7 @@ router.post("/register", async (req, res) => {
   res.status(201).json({ token, role });
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", authLimiter, async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
